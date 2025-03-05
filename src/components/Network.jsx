@@ -18,9 +18,9 @@ const Network = () => {
   }, []);
 
   const generateNetwork = (n) => {
-    const radius = 150;
-    const centerX = 250;
-    const centerY = 250;
+    const radius = 180;
+    const centerX = 300;
+    const centerY = 300;
     const newNodes = [];
 
     for (let i = 0; i < n; i++) {
@@ -226,8 +226,7 @@ const Network = () => {
       const index = selectedNodes.indexOf(nodeId);
       if (index < selectedNodes.length - 1) {
         setSelectedNodes(selectedNodes.slice(0, index + 1));
-      }
-      else if (selectedNodes.length === 1) {
+      } else if (selectedNodes.length === 1) {
         setSelectedNodes([]);
       }
     } else {
@@ -296,7 +295,7 @@ const Network = () => {
   const handleMouseUp = () => {
     setIsDragging(false);
   };
-  
+
   const handleClearSelection = () => {
     setSelectedNodes([]);
   };
@@ -322,24 +321,71 @@ const Network = () => {
 
   return (
     <div className="flex flex-col items-center w-full select-none">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Interactive Network Selection
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-8 rounded-2xl shadow-xl w-full max-w-3xl mx-auto border border-gray-200">
+        <h2 className="text-3xl font-bold mb-4 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          Derivative Works
         </h2>
-        <p className="mb-4 text-center">
-          Click a node and drag along connected nodes to create a path
+        <p className="mb-6 text-center text-gray-600 font-medium">
+          Create unique codes by tracing paths through the network
         </p>
 
-        <div className="relative border border-gray-200 rounded-lg mb-4">
+        <div className="relative mb-6 rounded-xl overflow-hidden bg-white border border-gray-200 shadow-md">
+          <div className="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur-sm rounded-lg shadow-sm z-10 hidden sm:block">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+                <span className="text-xs font-medium text-gray-700">
+                  Selected
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                <span className="text-xs font-medium text-gray-700">
+                  Available
+                </span>
+              </div>
+            </div>
+          </div>
+
           <svg
             ref={svgRef}
-            width="500"
-            height="500"
+            width="100%"
+            height="100%"
+            viewBox="0 0 600 600"
+            preserveAspectRatio="xMidYMid meet"
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            className="bg-gray-50"
             style={{ userSelect: "none" }}
           >
+            <defs>
+              <pattern
+                id="grid"
+                width="20"
+                height="20"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M 20 0 L 0 0 0 20"
+                  fill="none"
+                  stroke="rgba(226, 232, 240, 0.5)"
+                  strokeWidth="1"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+
+            <circle cx="300" cy="300" r="220" fill="rgba(236, 246, 255, 0.7)" />
+            <circle
+              cx="300"
+              cy="300"
+              r="210"
+              fill="none"
+              stroke="rgba(96, 165, 250, 0.2)"
+              strokeWidth="1"
+            />
+
             {edges.map((edge) => {
               const source = nodes.find((n) => n.id === edge.source);
               const target = nodes.find((n) => n.id === edge.target);
@@ -364,7 +410,7 @@ const Network = () => {
                       x2={target.x}
                       y2={target.y}
                       stroke="rgba(74, 222, 128, 0.4)"
-                      strokeWidth="8"
+                      strokeWidth="10"
                       strokeLinecap="round"
                     />
                   )}
@@ -376,21 +422,21 @@ const Network = () => {
                     y2={target.y}
                     stroke={
                       isSelected
-                        ? "#2563eb"
+                        ? "#3b82f6"
                         : isHovered
                         ? "#93c5fd"
                         : isHighlighted
                         ? "#4ade80"
-                        : "#d1d5db"
+                        : "#e2e8f0"
                     }
                     strokeWidth={
                       isSelected
-                        ? "4"
+                        ? "5"
                         : isHovered
-                        ? "3"
+                        ? "4"
                         : isHighlighted
-                        ? "2"
-                        : "1"
+                        ? "3"
+                        : "2"
                     }
                     strokeLinecap="round"
                     className="cursor-pointer"
@@ -414,8 +460,8 @@ const Network = () => {
                 x2={mousePosition.x}
                 y2={mousePosition.y}
                 stroke="rgba(59, 130, 246, 0.6)"
-                strokeWidth="3"
-                strokeDasharray="5,5"
+                strokeWidth="4"
+                strokeDasharray="6,6"
               />
             )}
 
@@ -431,29 +477,40 @@ const Network = () => {
                   className="cursor-pointer"
                 >
                   {isValidNext && (
+                    <>
+                      <circle
+                        cx={node.x}
+                        cy={node.y}
+                        r="32"
+                        fill="rgba(74, 222, 128, 0.15)"
+                      />
+                      <circle
+                        cx={node.x}
+                        cy={node.y}
+                        r="26"
+                        fill="rgba(74, 222, 128, 0.3)"
+                      />
+                    </>
+                  )}
+                  {isValidNext && (
                     <circle
                       cx={node.x}
                       cy={node.y}
-                      r="26"
-                      fill="rgba(74, 222, 128, 0.3)"
-                    />
+                      r="22"
+                      fill="transparent"
+                      stroke="#4ade80"
+                      strokeWidth="2"
+                      strokeDasharray="4,3"
+                    >
+                      <animate
+                        attributeName="stroke-dashoffset"
+                        from="0"
+                        to="28"
+                        dur="3s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
                   )}
-
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r="22"
-                    fill="transparent"
-                    stroke={
-                      isSelected
-                        ? "#3b82f6"
-                        : isValidNext
-                        ? "#4ade80"
-                        : "transparent"
-                    }
-                    strokeWidth="2"
-                    strokeDasharray={isValidNext ? "3,3" : "0"}
-                  />
 
                   <circle
                     cx={node.x}
@@ -466,7 +523,7 @@ const Network = () => {
                         ? "#dbeafe"
                         : isValidNext
                         ? "#ecfdf5"
-                        : "#f3f4f6"
+                        : "#f8fafc"
                     }
                     stroke={
                       isSelected
@@ -475,7 +532,7 @@ const Network = () => {
                         ? "#93c5fd"
                         : isValidNext
                         ? "#4ade80"
-                        : "#d1d5db"
+                        : "#cbd5e1"
                     }
                     strokeWidth="2"
                   />
@@ -493,70 +550,198 @@ const Network = () => {
                   >
                     {node.label}
                   </text>
-
                 </g>
               );
             })}
+
+            <defs></defs>
           </svg>
         </div>
 
-        <div className="p-4 bg-gray-100 rounded-lg">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold">Selected Path:</h3>
-            <button
-              onClick={handleClearSelection}
-              className="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm"
-            >
-              Clear
-            </button>
+        <div className="space-y-4 sm:space-y-6">
+          <div className="p-3 sm:p-5 bg-white rounded-xl shadow-md border border-gray-200">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-bold text-gray-800 text-lg">Selected Path</h3>
+              <button
+                onClick={handleClearSelection}
+                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 active:bg-gray-300 rounded-lg text-sm font-medium text-gray-700 transition-colors duration-150 flex items-center gap-1 shadow-sm"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+                Clear
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {selectedNodes.length > 0 ? (
+                <div className="flex items-center w-full overflow-x-auto py-2 px-1 flex-wrap sm:flex-nowrap">
+                  {selectedNodes.map((nodeId, index) => {
+                    const node = nodes.find((n) => n.id === nodeId);
+                    return node ? (
+                      <React.Fragment key={`selected-${nodeId}`}>
+                        <div
+                          className={`
+                          flex items-center justify-center w-10 h-10 rounded-full text-white font-bold shadow-md
+                          bg-blue-600
+                        `}
+                        >
+                          {node.label}
+                        </div>
+                        {index < selectedNodes.length - 1 && (
+                          <svg
+                            className="mx-1"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#94a3b8"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5l7 7-7 7"></path>
+                          </svg>
+                        )}
+                      </React.Fragment>
+                    ) : null;
+                  })}
+                </div>
+              ) : (
+                <div className="w-full py-8 flex justify-center items-center">
+                  <p className="text-gray-400 italic flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 8v4"></path>
+                      <path d="M12 16h.01"></path>
+                    </svg>
+                    Start by selecting nodes to create a path
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <h3 className="font-bold text-gray-800 text-lg mb-2">
+              Unique Code
+            </h3>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100 relative overflow-hidden">
+              <div className="absolute inset-0 flex-none w-1 bg-gradient-to-b from-blue-500 to-indigo-500"></div>
+              <p className="text-center font-mono text-lg pl-3 font-semibold tracking-wide text-gray-800">
+                {uniqueString || "—————"}
+              </p>
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            {selectedNodes.length > 0 ? (
-              selectedNodes.map((nodeId, index) => {
-                const node = nodes.find((n) => n.id === nodeId);
-                return node ? (
-                  <div
-                    key={`selected-${nodeId}`}
-                    className={`
-                      flex items-center justify-center w-8 h-8 rounded-full text-white font-bold
-                      ${
-                        index === selectedNodes.length - 1
-                          ? "bg-blue-700"
-                          : "bg-blue-500"
-                      }
-                    `}
-                  >
-                    {node.label}
-                  </div>
-                ) : null;
-              })
-            ) : (
-              <p className="text-gray-500 italic">No nodes selected</p>
-            )}
+          <div className="p-3 sm:p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-md border border-blue-100">
+            <div className="flex items-start gap-3 mb-2">
+              <div className="flex-none mt-1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#3b82f6"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 16v-4"></path>
+                  <path d="M12 8h.01"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-blue-800 mb-2">How to Use</h3>
+                <ul className="space-y-1 sm:space-y-2">
+                  <li className="flex items-start gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#4ade80"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-none mt-0.5"
+                    >
+                      <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    <span className="text-gray-700">
+                      Click on any node to start a path
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#4ade80"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-none mt-0.5"
+                    >
+                      <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    <span className="text-gray-700">
+                      Drag through{" "}
+                      <span className="text-green-600 font-medium">
+                        highlighted nodes
+                      </span>{" "}
+                      to extend your path
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#4ade80"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-none mt-0.5"
+                    >
+                      <path d="M20 6L9 17l-5-5"></path>
+                    </svg>
+                    <span className="text-gray-700">
+                      Each selection creates a unique code for sharing
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-
-          <h3 className="font-bold mb-2">Unique String for Selection:</h3>
-          <p className="bg-blue-100 p-3 rounded text-center font-mono text-lg">
-            {uniqueString || "(Select nodes to generate)"}
-          </p>
-        </div>
-
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm border border-blue-200">
-          <p className="font-semibold mb-1">Tips:</p>
-          <ul className="list-disc pl-5 space-y-1">
-            <li>Click on any node to start a path</li>
-            <li>
-              Drag through{" "}
-              <span className="text-green-500 font-medium">
-                highlighted edges and nodes
-              </span>{" "}
-              to extend your path
-            </li>
-            <li>Click directly on edges to select both connected nodes</li>
-            <li>Move back to a previous node to backtrack along your path</li>
-            <li>Each unique selection creates a different code</li>
-          </ul>
         </div>
       </div>
     </div>
